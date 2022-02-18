@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <title> Online chat system | Login </title>
+    </head> 
+    <body>
+    <form class = "login-form" action="./main.html" method="POST" onsubmit="return login()">
+        <h1> Online chat system </h1>
+        <p><input type = "text"  name = "nickname" required="true"/></p>
+        <p><input type = "submit" value = "log in" /></p>
+    </from>
+    <style>
+        *{
+            margin: 0; padding:0;
+        }
+        body{
+            background: #efefef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-form{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 6em;
+        }
+        input[type="text"]{
+            width: 20em;
+            height: 2em;
+            margin-top: 1em;
+        }
+        input[type="submit"]{
+            margin-top: 0.5em;
+            width: 20em;
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            background: #009688;
+            color: #fff;
+        }            
+    </style>
+
+    <script type="text/javascript" src="./lib/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript">
+        function login(){
+            var element = document.getElementsByName("nickname")[0];
+            var nickname = element.value;
+            var success = false;
+
+            var data = {
+                nickname: nickname
+            };
+            
+            $.ajax({
+                url: "http://localhost:8000/login/",
+                type: "POST",
+                contentType: "application/json",
+                cache: false,
+                async: false,
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: function(result){
+                    console.log(result);
+                    if (result.status == 1){
+                        localStorage.setItem("auth", result.auth);
+                        localStorage.setItem("nickname", nickname);
+                        success = True;
+                    }
+                    else {
+                        alert(result.message);
+                    }
+                },
+                error: function(xhr){
+                    console.error(xhr);
+                }
+            });
+
+            return success;
+        }
+
+        window.onload = function(){
+            var nickname = localStorage.getItem("nickname");
+            if(nickname){
+                window.location.href = "./main.html"
+            }
+        }
+    </script>
+    </body>
+</html>
